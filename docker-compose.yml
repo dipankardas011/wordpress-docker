@@ -1,0 +1,29 @@
+# without HTTPs so wordpress should work
+# with HTTP will need a nginx with certicates mounted to as volume
+
+version: "3"
+
+services:
+  db:
+    image: mysql:8.0.36
+    container_name: db
+    networks:
+    - wordpress-net
+    env_file: .env.db
+
+  wordpress:
+    depends_on:
+      - db
+    image: wordpress:6.4.3-apache
+    # image: wordpress:php8.1-fpm-alpine # it requires fpm based nginx
+    container_name: wordpress
+    networks:
+    - wordpress-net
+    env_file: .env.wordpress
+    environment:
+      WORDPRESS_DB_HOST: "db:3306"
+    ports:
+    - 8080:80
+  
+networks:
+  wordpress-net:
