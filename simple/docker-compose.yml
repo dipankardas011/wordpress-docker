@@ -10,6 +10,8 @@ services:
     networks:
     - wordpress-net
     env_file: ../.env.db
+    volumes:
+      - "db_vol:/var/lib/mysql"
 
   wordpress:
     depends_on:
@@ -22,8 +24,14 @@ services:
     env_file: ../.env.wordpress
     environment:
       WORDPRESS_DB_HOST: "db:3306"
+    volumes:
+      - "wp_vol:/var/www/html"
     ports:
     - 8080:80
-  
+
+volumes:
+  db_vol:
+  wp_vol:
+
 networks:
   wordpress-net:
