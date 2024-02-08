@@ -9,7 +9,7 @@ services:
     container_name: db
     networks:
     - wordpress-net
-    env_file: .env.db
+    env_file: ../.env.db
 
   wordpress:
     depends_on:
@@ -19,7 +19,7 @@ services:
     container_name: wordpress
     networks:
     - wordpress-net
-    env_file: .env.wordpress
+    env_file: ../.env.wordpress
     environment:
       WORDPRESS_DB_HOST: "db:3306"
     ports:
