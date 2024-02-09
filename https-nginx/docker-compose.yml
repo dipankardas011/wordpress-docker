@@ -27,7 +27,7 @@ services:
 
   webserver:
     depends_on:
-      permissions:
+      pre_certbot:
         condition: service_completed_successfully
 
     image: nginx:alpine3.18
@@ -43,7 +43,7 @@ services:
       - "wp_vol:/var/www/html"
       - "certbot_vol:/etc/letsencrypt"
 
-  permissions:
+  pre_certbot:
     image: ubuntu
     volumes:
       - wp_vol:/var/www/html
@@ -52,8 +52,11 @@ services:
     - /bin/bash
     - -c
     - |
+      echo "create acme-challenge folders"
       mkdir -p /var/www/html/.well-known/acme-challenge
       chown -R 82:www-data /var/www/html/.well-known/acme-challenge
+
+      echo "create temporary certificates so that nginx is running"
       mkdir -p /etc/letsencrypt/live/dipankar.rt.gw
       cd /etc/letsencrypt/live/dipankar.rt.gw
       apt update -y
@@ -70,32 +73,47 @@ services:
       start_period: 40s
       start_interval: 5s
 
-  # pre-certbot:
-  #   image: certbot/certbot
-  #   depends_on:
-  #     - permissions
-  #     - webserver
-  #   restart: on-failure
-  #   volumes:
-  #     - certbot_vol:/etc/letsencrypt
-  #     - wp_vol:/var/www/html
-  #   command: ['certonly', '--webroot', '--webroot-path=/var/www/html','--agree-tos', '--staging','--email','dipankar.das@rtcamp.com','-d', 'dipankar.rt.gw']
-    
   certbot:
     image: certbot/certbot
     depends_on:
-      permissions:
+      pre_certbot:
         condition: service_completed_successfully
     restart: on-failure
     volumes:
-      - certbot_vol:/etc/letsencrypt
-      - wp_vol:/var/www/html
+      - _certbot_vol:/etc/letsencrypt  # using a new volume to again write the contents back
+      - wp_vol:/var/www/html  # directly to nginx
     command: ['certonly', '--webroot', '--webroot-path=/var/www/html','--agree-tos', '--force-renewal','--email','dipankar.das@rtcamp.com','-d', 'dipankar.rt.gw']
+
+    healthcheck:
+      test: ["CMD-SHELL", "ls -la /etc/letsencrypt/live/dipankar.rt.gw/fullchain.pem || exit 1"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+      start_interval: 5s
     
+  post_certbot:
+    image: ubuntu
+    depends_on:
+      certbot:
+        condition: service_completed_successfully
+    volumes:
+      - certbot_vol:/etc/letsencrypt
+      - _certbot_vol:/etc/_letsencrypt
+    command:
+    - '/bin/bash'
+    - '-c'
+    - |
+      echo "#######"
+      ls -laR /etc/_letsencrypt
+      echo "#######"
+      ls -laR /etc/letsencrypt
+      mv -v /etc/_letsencrypt/etc/letsencrypt/live /etc/letsencrypt/live
 
 volumes:
   db_vol:
   wp_vol:
+  _certbot_vol:
   certbot_vol:
 
 networks:
