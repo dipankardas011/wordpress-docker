@@ -29,6 +29,7 @@ services:
     depends_on:
       - wordpress
     image: nginx:alpine3.18
+    restart: unless-stopped
     ports:
       - "80:80"
       - "443:443"
@@ -48,7 +49,7 @@ services:
     volumes:
       - certbot_vol:/etc/letsencrypt
       - wp_vol:/var/www/html
-    command: certonly --webroot --webroot-path=/var/www/html --email dipankardas0115@gmail.com --agree-tos --no-eff-email --force-renewal -d wordpress.dipankar-das.com
+    command: certonly --webroot --webroot-path=/var/www/html --email dipankar.das@rtcamp.com --force-renewal --agree-tos --no-eff-email -d dipankar.rt.gw
 
 volumes:
   db_vol:
