@@ -1,6 +1,6 @@
 #!/bin/bash
 
-COMPOSE="/usr/local/bin/docker compose -f https-nginx/docker-compose.yml --no-ansi"
+COMPOSE="/usr/bin/docker compose -f https-nginx/docker-compose.yml --no-ansi"
 DOCKER="/usr/bin/docker"
 
 cd /root/docker-wordpress
