@@ -80,7 +80,7 @@ services:
         condition: service_completed_successfully
     restart: on-failure
     volumes:
-      - _certbot_vol:/etc/letsencrypt  # using a new volume to again write the contents back
+      - certbot_vol1:/etc/letsencrypt  # using a new volume to again write the contents back
       - wp_vol:/var/www/html  # directly to nginx
     command: ['certonly', '--webroot', '--webroot-path=/var/www/html','--agree-tos', '--staging','--email','dipankar.das@rtcamp.com','-d', 'dipankar.rt.gw']
     # command: ['certonly', '--webroot', '--webroot-path=/var/www/html','--agree-tos', '--force-renewal','--email','dipankar.das@rtcamp.com','-d', 'dipankar.rt.gw']
@@ -100,7 +100,7 @@ services:
         condition: service_completed_successfully
     volumes:
       - certbot_vol:/etc/letsencrypt
-      - _certbot_vol:/etc/_letsencrypt
+      - certbot_vol1:/etc/_letsencrypt
     command:
     - '/bin/bash'
     - '-c'
@@ -114,7 +114,7 @@ services:
 volumes:
   db_vol:
   wp_vol:
-  _certbot_vol:
+  certbot_vol1:
   certbot_vol:
 
 networks:
