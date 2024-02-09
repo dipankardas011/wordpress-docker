@@ -41,15 +41,38 @@ services:
       - "wp_vol:/var/www/html"
       - "certbot_vol:/etc/letsencrypt"
 
+  # certbot:
+  #   depends_on:
+  #     - webserver
+  #   image: certbot/certbot
+  #   container_name: certbot
+  #   volumes:
+  #     - certbot_vol:/etc/letsencrypt
+  #     - wp_vol:/var/www/html
+  #   command: certonly --webroot --webroot-path=/var/www/html --email dipankar.das@rtcamp.com --force-renewal --agree-tos --no-eff-email -d dipankar.rt.gw
+  permissions:
+    image: ubuntu
+    volumes:
+      - wp_vol:/var/www/html
+    command:
+    - /bin/bash
+    - -c
+    - |
+      mkdir -p /var/www/html/.well-known/acme-challenge
+      chown -R 82:www-data /var/www/html/.well-known/acme-challenge
+      ls -lRa /var/www/html/
+    
   certbot:
+    image: certbot/certbot
     depends_on:
       - webserver
-    image: certbot/certbot
-    container_name: certbot
+      - permissions
+    restart: unless-stopped
     volumes:
       - certbot_vol:/etc/letsencrypt
       - wp_vol:/var/www/html
-    command: certonly --webroot --webroot-path=/var/www/html --email dipankar.das@rtcamp.com --force-renewal --agree-tos --no-eff-email -d dipankar.rt.gw
+    command: ['certonly', '--webroot', '--webroot-path=/var/www/html','--agree-tos', '--email','dipankar0115@gmail.com','-d', 'dipankar.rt.gw']  # Replace with your domain
+    
 
 volumes:
   db_vol:
