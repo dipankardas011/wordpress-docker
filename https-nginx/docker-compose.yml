@@ -30,6 +30,7 @@ services:
       - wordpress
       - pre-certbot
     image: nginx:alpine3.18
+    restart: on-failure
     ports:
       - "80:80"
       - "443:443"
