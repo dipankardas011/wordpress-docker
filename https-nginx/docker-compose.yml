@@ -29,7 +29,7 @@ services:
     depends_on:
       - wordpress
     image: nginx:alpine3.18
-    restart: on-failure
+    restart: unless-stopped
     ports:
       - "80:80"
       - "443:443"
@@ -59,6 +59,13 @@ services:
       - permissions
       - webserver
     restart: on-failure
+    healthcheck:
+      test: ["CMD-SHELL", "ls -la /etc/letsencrypt/live/dipankar.rt.gw || exit 1"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+      start_interval: 5s
     volumes:
       - certbot_vol:/etc/letsencrypt
       - wp_vol:/var/www/html
@@ -67,7 +74,8 @@ services:
   certbot:
     image: certbot/certbot
     depends_on:
-      - pre-certbot
+      pre-certbot:
+        condition: service_completed_successfully
     restart: on-failure
     volumes:
       - certbot_vol:/etc/letsencrypt
