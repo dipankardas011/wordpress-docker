@@ -28,6 +28,7 @@ services:
   webserver:
     depends_on:
       - wordpress
+      - permissions
     image: nginx:alpine3.18
     restart: unless-stopped
     ports:
@@ -45,31 +46,37 @@ services:
     image: ubuntu
     volumes:
       - wp_vol:/var/www/html
+      - "certbot_vol:/etc/letsencrypt"
     command:
     - /bin/bash
     - -c
     - |
       mkdir -p /var/www/html/.well-known/acme-challenge
       chown -R 82:www-data /var/www/html/.well-known/acme-challenge
-      ls -lRa /var/www/html/
+      mkdir -p /etc/letsencrypt/live/dipankar.rt.gw
+      cd /etc/letsencrypt/live/dipankar.rt.gw
+      apt update -y
+      apt install openssl -y
+      openssl req -x509 -nodes -newkey rsa:4096 -days 1 -keyout 'privkey.pem' -out 'fullchain.pem' -subj '/CN=localhost'
 
-  pre-certbot:
-    image: certbot/certbot
-    depends_on:
-      - permissions
-      - webserver
-    restart: on-failure
     healthcheck:
-      test: ["CMD-SHELL", "ls -la /etc/letsencrypt/live/dipankar.rt.gw || exit 1"]
+      test: ["CMD-SHELL", "ls -la /etc/letsencrypt/live/dipankar.rt.gw/fullchain.pem || exit 1"]
       interval: 1m30s
       timeout: 10s
       retries: 3
       start_period: 40s
       start_interval: 5s
-    volumes:
-      - certbot_vol:/etc/letsencrypt
-      - wp_vol:/var/www/html
-    command: ['certonly', '--webroot', '--webroot-path=/var/www/html','--agree-tos', '--staging','--email','dipankar.das@rtcamp.com','-d', 'dipankar.rt.gw']
+
+  # pre-certbot:
+  #   image: certbot/certbot
+  #   depends_on:
+  #     - permissions
+  #     - webserver
+  #   restart: on-failure
+  #   volumes:
+  #     - certbot_vol:/etc/letsencrypt
+  #     - wp_vol:/var/www/html
+  #   command: ['certonly', '--webroot', '--webroot-path=/var/www/html','--agree-tos', '--staging','--email','dipankar.das@rtcamp.com','-d', 'dipankar.rt.gw']
     
   certbot:
     image: certbot/certbot
