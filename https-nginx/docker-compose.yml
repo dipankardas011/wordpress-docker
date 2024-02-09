@@ -82,7 +82,8 @@ services:
     volumes:
       - _certbot_vol:/etc/letsencrypt  # using a new volume to again write the contents back
       - wp_vol:/var/www/html  # directly to nginx
-    command: ['certonly', '--webroot', '--webroot-path=/var/www/html','--agree-tos', '--force-renewal','--email','dipankardas0115@gmail.com','-d', 'dipankar.rt.gw']
+    command: ['certonly', '--webroot', '--webroot-path=/var/www/html','--agree-tos', '--staging','--email','dipankar.das@rtcamp.com','-d', 'dipankar.rt.gw']
+    # command: ['certonly', '--webroot', '--webroot-path=/var/www/html','--agree-tos', '--force-renewal','--email','dipankar.das@rtcamp.com','-d', 'dipankar.rt.gw']
 
     healthcheck:
       test: ["CMD-SHELL", "ls -la /etc/letsencrypt/live/dipankar.rt.gw/fullchain.pem || exit 1"]
