@@ -28,7 +28,6 @@ services:
   webserver:
     depends_on:
       - wordpress
-      - pre-certbot
     image: nginx:alpine3.18
     restart: on-failure
     ports:
@@ -68,7 +67,6 @@ services:
   certbot:
     image: certbot/certbot
     depends_on:
-      - webserver
       - pre-certbot
     restart: on-failure
     volumes:
