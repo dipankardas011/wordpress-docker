@@ -43,52 +43,16 @@ services:
       - "wp_vol:/var/www/html"
       - "certbot_vol:/etc/letsencrypt"
 
-  # pre_certbot:
-  #   image: certbot/certbot
-  #   volumes:
-  #     - wp_vol:/var/www/html
-  #     - "certbot_vol:/etc/letsencrypt"
-  #   # command:
-  #   # - /bin/bash
-  #   # - -c
-  #   # - |
-  #   #   echo "create acme-challenge folders"
-  #   #   mkdir -p /var/www/html/.well-known/acme-challenge
-  #   #   chown -R 82:www-data /var/www/html/.well-known/acme-challenge
-  #   #
-  #   #   echo "create temporary certificates so that nginx is running"
-  #   #   mkdir -p /etc/letsencrypt/live/dipankar.rt.gw
-  #   #   cd /etc/letsencrypt/live/dipankar.rt.gw
-  #   #   apt update -y
-  #   #   apt install openssl -y
-  #   #   openssl req -x509 -nodes -newkey rsa:4096 -days 1 -keyout 'privkey.pem' -out 'fullchain.pem' -subj '/CN=localhost'
-  #
-  #
-  #   restart: on-failure
-  #   command: ['certonly', '--standalone', '--agree-tos', '--staging', '--email','dipankar.das@rtcamp.com', '-d', 'dipankar.rt.gw']
-  #   depends_on:
-  #   - wordpress
-  #   ports:
-  #     - "80:80"
-  #
-  #   healthcheck:
-  #     test: ["CMD-SHELL", "ls -la /etc/letsencrypt/live/dipankar.rt.gw/fullchain.pem || exit 1"]
-  #     interval: 1m30s
-  #     timeout: 10s
-  #     retries: 3
-  #     start_period: 40s
-  #     start_interval: 5s
-
   certbot:
     image: certbot/certbot
     restart: on-failure
     volumes:
-      - certbot_vol:/etc/letsencrypt  # using a new volume to again write the contents back
+      - certbot_vol:/etc/letsencrypt
 
     ports:
       - "80:80"
-    command: ['certonly', '--standalone', '--agree-tos', '--staging', '--email','dipankar.das@rtcamp.com', '-d', 'dipankar.rt.gw']
-    # command: ['certonly', '--webroot', '--webroot-path=/var/www/html','--agree-tos', '--force-renewal','--email','dipankar.das@rtcamp.com','-d', 'dipankar.rt.gw']
+    command: ['certonly', '--standalone', '--agree-tos', '--email','dipankar.das@rtcamp.com', '-d', 'dipankar.rt.gw']
+    # command: ['certonly', '--standalone', '--agree-tos', '--staging', '--email','dipankar.das@rtcamp.com', '-d', 'dipankar.rt.gw']
 
     healthcheck:
       test: ["CMD-SHELL", "ls -la /etc/letsencrypt/live/dipankar.rt.gw/fullchain.pem || exit 1"]
@@ -97,28 +61,10 @@ services:
       retries: 3
       start_period: 40s
       start_interval: 5s
-   
-  # post_certbot:
-  #   image: ubuntu
-  #   depends_on:
-  #     certbot:
-  #       condition: service_completed_successfully
-  #   volumes:
-  #     - certbot_vol:/etc/letsencrypt
-  #     - certbot_vol1:/etc/letsencrypt1
-  #   command:
-  #   - '/bin/bash'
-  #   - '-c'
-  #   - |
-  #     echo "#######"
-  #     ls -laR /etc/letsencrypt1
-  #     echo "#######"
-  #     ls -laR /etc/letsencrypt
 
 volumes:
   db_vol:
   wp_vol:
-  # certbot_vol1:
   certbot_vol:
 
 networks:
