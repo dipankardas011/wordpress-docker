@@ -27,7 +27,7 @@ services:
 
   webserver:
     depends_on:
-      pre-certbot:
+      permissions:
         condition: service_completed_successfully
 
     image: nginx:alpine3.18
@@ -84,7 +84,7 @@ services:
   certbot:
     image: certbot/certbot
     depends_on:
-      pre-certbot:
+      permissions:
         condition: service_completed_successfully
     restart: on-failure
     volumes:
