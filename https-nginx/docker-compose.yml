@@ -108,7 +108,7 @@ services:
       ls -laR /etc/_letsencrypt
       echo "#######"
       ls -laR /etc/letsencrypt
-      mv -v /etc/_letsencrypt/etc/letsencrypt/live /etc/letsencrypt/live
+      mv -v /etc/_letsencrypt/live /etc/letsencrypt/live
 
 volumes:
   db_vol:
