@@ -28,8 +28,8 @@ services:
   webserver:
     depends_on:
       - wordpress
+      - pre-certbot
     image: nginx:alpine3.18
-    restart: unless-stopped
     ports:
       - "80:80"
       - "443:443"
@@ -41,15 +41,6 @@ services:
       - "wp_vol:/var/www/html"
       - "certbot_vol:/etc/letsencrypt"
 
-  # certbot:
-  #   depends_on:
-  #     - webserver
-  #   image: certbot/certbot
-  #   container_name: certbot
-  #   volumes:
-  #     - certbot_vol:/etc/letsencrypt
-  #     - wp_vol:/var/www/html
-  #   command: certonly --webroot --webroot-path=/var/www/html --email dipankar.das@rtcamp.com --force-renewal --agree-tos --no-eff-email -d dipankar.rt.gw
   permissions:
     image: ubuntu
     volumes:
@@ -61,17 +52,28 @@ services:
       mkdir -p /var/www/html/.well-known/acme-challenge
       chown -R 82:www-data /var/www/html/.well-known/acme-challenge
       ls -lRa /var/www/html/
+
+  pre-certbot:
+    image: certbot/certbot
+    depends_on:
+      - permissions
+      - webserver
+    restart: on-failure
+    volumes:
+      - certbot_vol:/etc/letsencrypt
+      - wp_vol:/var/www/html
+    command: ['certonly', '--webroot', '--webroot-path=/var/www/html','--agree-tos', '--staging','--email','dipankar.das@rtcamp.com','-d', 'dipankar.rt.gw']
     
   certbot:
     image: certbot/certbot
     depends_on:
       - webserver
-      - permissions
-    restart: unless-stopped
+      - pre-certbot
+    restart: on-failure
     volumes:
       - certbot_vol:/etc/letsencrypt
       - wp_vol:/var/www/html
-    command: ['certonly', '--webroot', '--webroot-path=/var/www/html','--agree-tos', '--email','dipankar0115@gmail.com','-d', 'dipankar.rt.gw']  # Replace with your domain
+    command: ['certonly', '--webroot', '--webroot-path=/var/www/html','--agree-tos', '--force-renewal','--email','dipankar.das@rtcamp.com','-d', 'dipankar.rt.gw']
     
 
 volumes:
