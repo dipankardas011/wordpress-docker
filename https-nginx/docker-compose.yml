@@ -27,8 +27,9 @@ services:
 
   webserver:
     depends_on:
-      - wordpress
-      - permissions
+      pre-certbot:
+        condition: service_completed_successfully
+
     image: nginx:alpine3.18
     restart: unless-stopped
     ports:
@@ -58,6 +59,8 @@ services:
       apt update -y
       apt install openssl -y
       openssl req -x509 -nodes -newkey rsa:4096 -days 1 -keyout 'privkey.pem' -out 'fullchain.pem' -subj '/CN=localhost'
+    depends_on:
+    - wordpress
 
     healthcheck:
       test: ["CMD-SHELL", "ls -la /etc/letsencrypt/live/dipankar.rt.gw/fullchain.pem || exit 1"]
