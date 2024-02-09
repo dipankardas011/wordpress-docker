@@ -100,16 +100,15 @@ services:
         condition: service_completed_successfully
     volumes:
       - certbot_vol:/etc/letsencrypt
-      - certbot_vol1:/etc/_letsencrypt
+      - certbot_vol1:/etc/letsencrypt1
     command:
     - '/bin/bash'
     - '-c'
     - |
       echo "#######"
-      ls -laR /etc/_letsencrypt
+      ls -laR /etc/letsencrypt1
       echo "#######"
       ls -laR /etc/letsencrypt
-      mv -v /etc/_letsencrypt/live /etc/letsencrypt
 
 volumes:
   db_vol:
