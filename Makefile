@@ -15,9 +15,8 @@ custom-images-size:
 	docker compose -f custom-images-wordpress/docker-compose.yml images
 
 new-relic:
+	docker compose -f new-relic-https-nginx-wordpress/docker-compose.yml build
 	docker compose -f new-relic-https-nginx-wordpress/docker-compose.yml up -d
-	docker compose -f new-relic-https-nginx-wordpress/docker-compose-new-relic.yaml build
-	docker compose -f new-relic-https-nginx-wordpress/docker-compose-new-relic.yaml up -d
 
 clean:
 	docker compose -f simple/docker-compose.yml down --volumes
@@ -27,4 +26,3 @@ clean:
 
 clean-new-relic:
 	docker compose -f new-relic-https-nginx-wordpress/docker-compose.yml down --volumes
-	docker compose -f new-relic-https-nginx-wordpress/docker-compose-new-relic.yaml down --volumes

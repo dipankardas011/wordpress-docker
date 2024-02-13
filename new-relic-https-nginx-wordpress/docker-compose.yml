@@ -2,6 +2,25 @@
 version: "3"
 
 services:
+
+  agent:
+    container_name: newrelic-infra
+    build:
+      context: .
+      dockerfile: newrelic-infra.dockerfile
+    cap_add:
+      - SYS_PTRACE
+    pid: host
+    privileged: true
+    volumes:
+      - "/:/host:ro"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    restart: unless-stopped
+    networks:
+      - new-relic
+      - lb
+      - wordpress-net
+
   db:
     image: mysql:8.0.36
     container_name: db
@@ -52,7 +71,6 @@ services:
     ports:
       - "80:80"
     command: ['certonly', '--standalone', '--agree-tos', '--staging', '--email','dipankar.das@rtcamp.com', '-d', 'dipankar.rt.gw']
-    # command: ['certonly', '--standalone', '--agree-tos', '--email','dipankar.das@rtcamp.com', '-d', 'dipankar.rt.gw']
 
     healthcheck:
       test: ["CMD-SHELL", "ls -la /etc/letsencrypt/live/dipankar.rt.gw/fullchain.pem || exit 1"]
@@ -70,3 +88,5 @@ volumes:
 networks:
   wordpress-net:
   lb:
+  new-relic:
+    driver: bridge
