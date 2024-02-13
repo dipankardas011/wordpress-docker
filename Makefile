@@ -9,7 +9,10 @@ wordpress-2:
 
 custom-images:
 	docker compose -f custom-images-wordpress/docker-compose.yml build
-	docker compose -f custom-images-wordpress/docker-compose.yml up
+	docker compose -f custom-images-wordpress/docker-compose.yml up -d
+
+custom-images-size:
+	docker compose -f custom-images-wordpress/docker-compose.yml images
 
 clean:
 	docker compose -f simple/docker-compose.yml down --volumes
