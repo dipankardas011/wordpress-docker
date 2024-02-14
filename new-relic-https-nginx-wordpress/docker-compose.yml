@@ -27,10 +27,11 @@ services:
       dockerfile: Dockerfile
       args:
         NEW_RELIC_AGENT_VERSION: "10.10.0.1"
-        NEW_RELIC_LICENSE_KEY: "u01xxe98521b693b4b6740e69d2c552FFFFNRAL"
+        NEW_RELIC_LICENSE_KEY: "eu01xxe98521b693b4b6740e69d2c552FFFFNRAL"
         NEW_RELIC_APPNAME: "wordpress-php"
         IMAGE_NAME: "wordpress:php8.1-fpm"
     container_name: wordpress
+    image: wordpress:php8.1-fpm_with_newrelic
     networks:
       - wordpress-net
       - lb
