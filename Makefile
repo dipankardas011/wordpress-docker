@@ -18,7 +18,7 @@ new-relic:
 	# docker network create newrelic-php
 	# docker run -d --name newrelic-php-daemon --network newrelic-php newrelic/php-daemon
 	docker compose -f new-relic-https-nginx-wordpress/docker-compose.yml build
-	docker compose -f new-relic-https-nginx-wordpress/docker-compose.yml up
+	docker compose -f new-relic-https-nginx-wordpress/docker-compose.yml up -d
 	# cd new-relic-https-nginx-wordpress
 	# docker compose -f new-relic-https-nginx-wordpress/docker-compose.yml up -ddocker build -t "wordpress-php-img_with_newrelic" --build-arg NEW_RELIC_AGENT_VERSION=10.10.0.1 --build-arg NEW_RELIC_LICENSE_KEY=eu01xxe98521b693b4b6740e69d2c552FFFFNRAL --build-arg NEW_RELIC_APPNAME="wordpress-php" --build-arg IMAGE_NAME="wordpress-php-img" .
 	# docker run --network newrelic-php -p 8080:80 "wordpress-php-img_with_newrelic"
