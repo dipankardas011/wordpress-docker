@@ -38,8 +38,6 @@ services:
     env_file: ../.env.wordpress
     environment:
       WORDPRESS_DB_HOST: "db:3306"
-      # Ensure the PHP FPM service communicates with the New Relic daemon
-      NEW_RELIC_DAEMON_ADDRESS: "newrelic-php-daemon:31339"
     volumes:
       - "wp_vol:/var/www/html"
 
