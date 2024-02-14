@@ -55,6 +55,7 @@ services:
     volumes:
       - "./nginx.conf:/etc/nginx/conf.d/default.conf"
       - "wp_vol:/var/www/html"
+      - "./info.php:/var/www/info.php"
 
 volumes:
   db_vol:
