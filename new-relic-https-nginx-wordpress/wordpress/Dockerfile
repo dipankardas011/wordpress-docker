@@ -13,6 +13,6 @@ RUN curl -L https://download.newrelic.com/php_agent/archive/${NEW_RELIC_AGENT_VE
 
 RUN find /etc /usr/local/etc -type f -name newrelic.ini \
     -exec sed -i \
-        -e "s/NRAK-JHFMD2ZHUYBA7659CUD9UTSETHI/${NEW_RELIC_LICENSE_KEY}/" \
+        -e "s/newrelic.license[[:space:]]=[[:space:]].*/newrelic.license = \"${NEW_RELIC_LICENSE_KEY}\"/" \
         -e "s/newrelic.appname[[:space:]]=[[:space:]].*/newrelic.appname = \"${NEW_RELIC_APPNAME}\"/" \
         -e '$anewrelic.daemon.address="newrelic-php-daemon:31339"' {} \;
