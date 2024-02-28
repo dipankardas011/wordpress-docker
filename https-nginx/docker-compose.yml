@@ -57,7 +57,7 @@ services:
 
     ports:
       - "80:80"
-    command: ['certonly', '--standalone', '--agree-tos', '--staging', '--email','dipankar.das@rtcamp.com', '-d', 'dipankar.rt.gw']
+    command: ['certonly', '--standalone', '--force-renewal', '--agree-tos', '--staging', '--email','dipankar.das@rtcamp.com', '-d', 'dipankar.rt.gw']
     # command: ['certonly', '--standalone', '--agree-tos', '--email','dipankar.das@rtcamp.com', '-d', 'dipankar.rt.gw']
 
     healthcheck:
