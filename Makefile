@@ -5,7 +5,7 @@ wordpress-1:
 	docker compose -f nginx/docker-compose.yml up -d
 
 wordpress-2:
-	docker compose -f https-nginx/docker-compose.yml up -d
+	UID=${UID} GID=${GID} docker compose -f https-nginx/docker-compose.yml up -d
 
 custom-images:
 	docker compose -f custom-images-wordpress/docker-compose.yml build
