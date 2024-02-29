@@ -4,7 +4,7 @@ version: "3.8"
 services:
   db:
     image: mysql:latest
-    user: "${UID}:${GID}"
+    user: "${USERID}:${GROUPID}"
     container_name: db
     networks:
     - wordpress-net
@@ -22,7 +22,7 @@ services:
     depends_on:
       - db
     image: wordpress:fpm
-    user: "${UID}:${GID}"
+    user: "${USERID}:${GROUPID}"
     container_name: wordpress
     networks:
     - wordpress-net
@@ -42,7 +42,7 @@ services:
       - db
       - wordpress
     image: nginx:latest
-    user: "${UID}:${GID}"
+    user: "${USERID}:${GROUPID}"
     ports:
       - "80:80"
     networks:
