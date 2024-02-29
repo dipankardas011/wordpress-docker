@@ -4,7 +4,7 @@ version: "3.8"
 services:
   db:
     image: mysql:8.0.36
-    # user: "${UID}:${GID}"
+    user: $DOCKER_USER
     container_name: db
     networks:
     - wordpress-net
@@ -15,8 +15,6 @@ services:
       MYSQL_DATABASE: "wordpress"
     volumes:
       - type: bind
-        bind:
-          propagation: "slave"
         source: "/ee/db_vol"
         target: "/var/lib/mysql"
 
@@ -24,7 +22,7 @@ services:
     depends_on:
       - db
     image: wordpress:php8.1-fpm-alpine
-    # user: "${UID}:${GID}"
+    user: $DOCKER_USER
     container_name: wordpress
     networks:
     - wordpress-net
@@ -36,8 +34,6 @@ services:
       WORDPRESS_DB_NAME: "wordpress"
     volumes:
       - type: bind
-        bind:
-          propagation: "slave"
         source: "/ee/wp_vol"
         target: "/var/www/html"
 
@@ -46,7 +42,7 @@ services:
       - db
       - wordpress
     image: nginx:alpine3.18
-    # user: "${UID}:${GID}"
+    user: $DOCKER_USER
     ports:
       - "80:80"
     networks:
@@ -54,8 +50,6 @@ services:
     container_name: webserver
     volumes:
       - type: bind
-        bind:
-          propagation: "slave"
         source: "nginx.conf"
         target: "/etc/nginx/conf.d/default.conf"
       - type: bind
