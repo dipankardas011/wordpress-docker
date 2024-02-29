@@ -3,8 +3,8 @@ version: "3.8"
 
 services:
   db:
-    image: mysql:8.0.36
-    user: $DOCKER_USER
+    image: mysql:latest
+    user: "${UID}:${GID}"
     container_name: db
     networks:
     - wordpress-net
@@ -21,8 +21,8 @@ services:
   wordpress:
     depends_on:
       - db
-    image: wordpress:php8.1-fpm-alpine
-    user: $DOCKER_USER
+    image: wordpress:fpm
+    user: "${UID}:${GID}"
     container_name: wordpress
     networks:
     - wordpress-net
@@ -41,8 +41,8 @@ services:
     depends_on:
       - db
       - wordpress
-    image: nginx:alpine3.18
-    user: $DOCKER_USER
+    image: nginx:latest
+    user: "${UID}:${GID}"
     ports:
       - "80:80"
     networks:
